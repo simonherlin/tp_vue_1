@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Vuejs tp list de course</title>
+        <meta charset="UTF-8"> 
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    </head>
+    <body>
+        <h1>Liste des courses</h1>
+        <div id="app">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Budget</span>
+                </div>
+                <input v-bind:style="bgc" type="number" class="w-25 form-control" v-model="budget" @change="editBudget">
+                <div class="input-group-append">
+                    <span class="input-group-text">€</span>
+                </div>
+            </div>
+            <!-- <div class="alert alert-danger w-50" v-if="horsBudget">
+                Budget dépassé
+            </div> -->
+            <div>
+                <div class="input-group mb-3">
+                    <input v-model="element" type="text" class="w-25" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="button-addon2">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-success" type="button" @click="addList">Ajouter</button>
+                    </div>
+                </div>
+            </div>
+            <ul class="list-group list-group-flush">
+                <!-- <list v-for="item in listProduct" :elem=item :key="item.id"></list> -->
+                <li v-for="item in listProduct" class="w-50 list-group-item">
+                    <input type="checkbox" v-model="item.checked" @change="calTotal">
+                    <span style="width: 200px; display: inline-block;">
+                        {{ item.text }}
+                    </span>
+                    <input v-if="item.checked" type="number" v-model="item.price" @change="calTotal" style="width: 100px">
+                    <span v-if="item.checked">€</span>
+                    <button @click="sup(item.id)" type="button" class="btn btn-outline-danger">X</button>
+                </li>
+            </ul>
+            <div>
+                Total : {{ total }}
+            </div>
+        </div>
+        <script src="https://unpkg.com/vue"></script>
+        <script src="web/js/app.js"></script>
+    </body>
+</html>
