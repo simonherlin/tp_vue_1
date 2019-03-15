@@ -1,52 +1,59 @@
-// let list = ({
-//     props: {
-//       items: {
-//         type: Array
-//       }
-//     },
-//     data: () => ({
-//       filterMode: 'all'
-//     }),
-//     template:  `
-//            <ul>
-//
-//            </ul>
-//            <li v-for="item in elem" class="list-group-item">
-//                     <input type="checkbox" v-model="item.checked" @change="calTotal">
-//                     <span style="width: 200px; display: inline-block;">
-//                         {{ item.text }}
-//                     </span>
-//                     <input v-if="item.checked" type="number" v-model="item.price" @change="calTotal" style="width: 100px">
-//                     <span v-if="item.checked">€</span>
-//                     <button @click="sup(item.id)" type="button" class="btn btn-outline-danger">X</button>                    
-//                 </li>`,
-//     methods: {
-//         sup: function(id) {
-//             index = this.listProduct.map(function(e) { return e.id; }).indexOf(id);
-//             console.log(index)
-//             if (index > -1) {
-//                 this.listProduct.splice(index, 1);
-//                 this.calTotal()
-//             }
-//         }
-//     },
-//     computed: {
-//         list: {
-//             get: function () {
-//                 return this.listProduct
-//             },
-//             set: function (value) {
-//                 this.listProduct.push({id: this.listProduct.length, text: value[0], price: value[1], checked: false})
-//             }
-//         }
-//     }
-// })
+let list = ({
+    props: {
+      items: {
+        type: Array
+      }
+    },
+    data: () => ({
+      filterMode: 'all'
+    }),
+    template:  `
+        <ul class="list-group w-25">
+            <li class="list-group-item" v-for="(item, index) in list" :key="index"" style="display: flex;">
+                <div class="mr-5 w-25 d-inline-block"">
+                    <input type="checkbox" v-model="item.checked"/>
+                    {{ item.text }}
+                </div>
+                <div class="input-group w-50 " v-if="item.checked">
+                    <input type="number" class="form-control" v-model="item.price" @change='total'>
+                    <div class="input-group-append">
+                        <span class="input-group-text">€</span>
+                    </div>
+                </div>
+                <div class="mr-5 w-25 d-inline-block">
+                    <button type="button" @click="sup(item.id)" class="btn btn-danger">Supprimer</button>
+                </div>
+            </li>
+        </ul>`,
+    methods: {
+        sup: function(id) {
+            index = this.items.map(function(e) { return e.id; }).indexOf(id);
+            if (index > -1) {
+                this.items.splice(index, 1);
+                this.$parent.calTotal()
+            }
+        },
+        total: function() {
+            this.$parent.calTotal()
+        }
+    },
+    computed: {
+        list () {
+            if(this.filterMode === 'notBought')
+              return this.items.filter(i => !i.checked)
+            else if(this.filterMode === 'bought')
+              return this.items.filter(i => i.checked)
+            else
+              return this.items
+      }
+    }
+})
 
 var app = new Vue({
     el: '#app',
-    // components: {
-    //     list
-    // },
+    components: {
+        list
+    },
     data: {
         element: '',
         price: 0,
@@ -76,16 +83,17 @@ var app = new Vue({
             this.element = ''
             this.saveList()
         },
-        sup: function(id) {
-            index = this.listProduct.map(function(e) { return e.id; }).indexOf(id);
-            console.log(index)
-            if (index > -1) {
-                this.listProduct.splice(index, 1);
-                this.calTotal()
-            }
-            this.saveList()
-        },
+        // sup: function(id) {
+        //     index = this.listProduct.map(function(e) { return e.id; }).indexOf(id);
+        //     console.log(index)
+        //     if (index > -1) {
+        //         this.listProduct.splice(index, 1);
+        //         this.calTotal()
+        //     }
+        //     this.saveList()
+        // },
         calTotal: function() {
+            console.log('hey')
             this.total = 0
             for (let i =0; i < this.listProduct.length; i++) {
                 if (this.listProduct[i].checked) {
