@@ -7,7 +7,11 @@
 //     data: () => ({
 //       filterMode: 'all'
 //     }),
-//     template:  `<li v-for="item in elem" class="list-group-item">
+//     template:  `
+//            <ul>
+//
+//            </ul>
+//            <li v-for="item in elem" class="list-group-item">
 //                     <input type="checkbox" v-model="item.checked" @change="calTotal">
 //                     <span style="width: 200px; display: inline-block;">
 //                         {{ item.text }}
@@ -70,6 +74,7 @@ var app = new Vue({
         addList: function () {
             this.list.push({id:this.list.length, text: this.element, price: 0, checked: false})
             this.element = ''
+            this.saveList()
         },
         sup: function(id) {
             index = this.listProduct.map(function(e) { return e.id; }).indexOf(id);
@@ -78,6 +83,7 @@ var app = new Vue({
                 this.listProduct.splice(index, 1);
                 this.calTotal()
             }
+            this.saveList()
         },
         calTotal: function() {
             this.total = 0
@@ -87,6 +93,7 @@ var app = new Vue({
                 }
             }
             this.editBudget()
+            this.saveList()
         },
         editBudget: function(){
             if (this.budget > this.total){
@@ -94,9 +101,32 @@ var app = new Vue({
             }else{
                 this.bgc = 'border-color:red'
             }
+            this.saveBudget()
+        },
+        saveList: function() {
+            const parsed = JSON.stringify(this.listProduct);
+            localStorage.setItem('listProduct', parsed);
+        },
+        saveBudget: function () {
+            const parsed = JSON.stringify(this.budget);
+            localStorage.setItem('budget', parsed);
         }
     },
     mounted() {
+        if (localStorage.getItem('listProduct')) {
+            try {
+              this.listProduct = JSON.parse(localStorage.getItem('listProduct'));
+            } catch(e) {
+              localStorage.removeItem('listProduct');
+            }
+          }
+          if (localStorage.getItem('budget')) {
+            try {
+                this.budget = JSON.parse(localStorage.getItem('budget'));
+              } catch(e) {
+                localStorage.removeItem('budget');
+              } 
+          }
         this.calTotal()
     }
 })
